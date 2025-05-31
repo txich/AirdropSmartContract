@@ -12,3 +12,5 @@ Cleck actual allocation;
 Airdrop is shared equally between all registered users.
 You can register an address only once.
 You need at least 1 eth to register. (changeable)
+
+The Contract was tested using Hardhat. Use in mainnet on your own risk.

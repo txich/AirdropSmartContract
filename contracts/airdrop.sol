@@ -38,12 +38,15 @@ contract Airdrop {
 
     function startAirdrop() public onlyOwner {
 
+        uint allocation = address(this).balance/eligibleAddresses.length;
+
         for (uint256 i = 0; i < eligibleAddresses.length; i++) {
-            payable(eligibleAddresses[i]).transfer(address(this).balance/(eligibleAddresses.length - i));
+            payable(eligibleAddresses[i]).transfer(allocation);
         }
     }
 
     function changeOwner (address newOwner) public onlyOwner {
+        require(newOwner != address(0), "Invalid Address");
         owner = newOwner;
     }
 

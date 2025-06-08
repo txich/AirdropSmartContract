@@ -1,16 +1,13 @@
-A simple Airdrop smart contract.
+# Sample Hardhat Project
 
-Cotains functions such as:
+This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
 
-Change owner (Owner-only);
-Add funds (Owner-only);
-Start airdrop (Owner-only);
-Register in airdrop;
-Check eligible wallets;
-Cleck actual allocation;
+Try running some of the following tasks:
 
-Airdrop is shared equally between all registered users.
-You can register an address only once.
-You need at least 1 eth to register. (changeable)
-
-The Contract was tested using Hardhat. Use in mainnet on your own risk.
+```shell
+npx hardhat help
+npx hardhat test
+REPORT_GAS=true npx hardhat test
+npx hardhat node
+npx hardhat ignition deploy ./ignition/modules/Lock.ts
+```

@@ -2,11 +2,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.2;
 
-contract Airdrop {
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
+contract Airdrop is ReentrancyGuard {
+
+    bool public airdropStarted;
 
     mapping (address => bool) public isEligible;
+    mapping (address => bool) public claimed;
     address public owner;
     address[] public eligibleAddresses;
+    uint public allocation;
+
+    event AirdropClaimed(address indexed user, uint amount);
 
     modifier onlyOwner {
         require(msg.sender == owner, "Owner-only function");
@@ -18,6 +26,7 @@ contract Airdrop {
     }
 
     function registerAddress() public {
+        require(!airdropStarted, "Airdrop already started");
         require(isEligible[msg.sender] == false, "Already registered");
         require(msg.sender != address(0), "Invalid address");
         require(address(msg.sender).balance >= 1 ether, "You need at least 1 ETH to participate");
@@ -30,7 +39,7 @@ contract Airdrop {
     }
 
     function viewAllocation() external view returns (uint256) {
-        return address(this).balance / eligibleAddresses.length;
+        return allocation;
     }
 
     function addFunds() public payable onlyOwner {
@@ -38,11 +47,27 @@ contract Airdrop {
 
     function startAirdrop() public onlyOwner {
 
-        uint allocation = address(this).balance/eligibleAddresses.length;
+        require(eligibleAddresses.length > 0, "No eligible addresses");
 
-        for (uint256 i = 0; i < eligibleAddresses.length; i++) {
-            payable(eligibleAddresses[i]).transfer(allocation);
-        }
+        require(!airdropStarted, "Airdrop already started");
+
+        airdropStarted = true;
+
+        allocation = address(this).balance / eligibleAddresses.length;
+    }
+
+    function claimAirdrop() public nonReentrant {
+        require(airdropStarted, "Claim is not opened yet.");
+        require(isEligible[msg.sender], "You are not eligible");
+        require(!claimed[msg.sender], "Already claimed");
+        
+        (bool success, ) = payable(msg.sender).call{value: allocation}("");
+        require(success, "Transfer failed");
+
+        claimed[msg.sender] = true;
+
+        emit AirdropClaimed(msg.sender, allocation);
+
     }
 
     function changeOwner (address newOwner) public onlyOwner {

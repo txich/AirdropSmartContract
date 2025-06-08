@@ -3,7 +3,7 @@
 
 ## A simple smart contract that can be used to make equal airdrops.
 
-### The allocation is equal for all users. User can register if balance > 1 ETH 
+### The allocation is equal for all users. User can register if balance > 1 ETH (changeable)
 
 ## Functions:
 
